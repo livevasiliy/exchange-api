@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Exceptions;
 
@@ -13,5 +15,4 @@ class NotFoundCurrencyException extends Exception
             'currency' => $currency,
         ]), $code, $previous);
     }
-
 }

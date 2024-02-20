@@ -10,5 +10,5 @@ return [
     'not.allow.http.method' => 'No allow HTTP method',
     'fail.fetch.list.of.rates' => 'Failed to fetch list of rates. Try again',
     'not.found.currency.for.rate' => 'Not found :currency currency in list of currencies. Check name currency',
-    'invalid.currency.for.exchange' => 'Not available for :from to be exchanged for :to . Check the currency code is correct'
+    'invalid.currency.for.exchange' => 'Not available for :from to be exchanged for :to . Check the currency code is correct',
 ];

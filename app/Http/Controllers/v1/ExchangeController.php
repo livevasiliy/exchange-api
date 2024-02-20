@@ -30,6 +30,7 @@ class ExchangeController extends Controller
             return new JsonResponse($data);
         } catch (Exception $exception) {
             Log::error($exception->getMessage(), $exception->getTrace());
+
             return new JsonResponse($exception->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

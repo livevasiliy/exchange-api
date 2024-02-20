@@ -8,9 +8,7 @@ use App\Contracts\ExchangeServiceContract;
 use App\Exceptions\FailFetchListOfRatesException;
 use App\Exceptions\InvalidCurrencyForExchangeException;
 use App\Exceptions\NotFoundCurrencyException;
-use Exception;
 use Illuminate\Support\Facades\Http;
-use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Response;
 
 class BlockchainInfoService implements ExchangeServiceContract

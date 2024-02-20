@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Exceptions;
 
@@ -11,5 +13,4 @@ class FailFetchListOfRatesException extends Exception
     {
         parent::__construct(trans('errors.fail.fetch.list.of.rates'), $code, $previous);
     }
-
 }
