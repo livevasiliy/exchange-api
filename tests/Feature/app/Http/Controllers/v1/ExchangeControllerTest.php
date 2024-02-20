@@ -10,16 +10,13 @@ class ExchangeControllerTest extends TestCase
 {
     public function test_it_unauthorized_for_rates_request()
     {
-        // Отправляем GET запрос с параметрами
         $response = $this->json('GET', '/api/v1/', [
             'method' => 'rates',
             'currency' => 'USD',
         ]);
 
-        // Проверяем успешный статус ответа
         $response->assertUnauthorized();
 
-        // Проверяем наличие ожидаемых ключей в JSON ответе
         $response->assertJsonStructure([
             'status',
             'code',
@@ -35,18 +32,15 @@ class ExchangeControllerTest extends TestCase
 
     public function test_it_unauthorized_pass_invalid_api_token()
     {
-        // Отправляем GET запрос с параметрами
         $response = $this->json('GET', '/api/v1/', [
             'method' => 'rates',
             'currency' => 'USD',
         ], [
-            'Authorization' => 'Bearer'.fake()->shuffleString(),
+            'Authorization' => 'Bearer '.fake()->shuffleString(),
         ]);
 
-        // Проверяем успешный статус ответа
         $response->assertUnauthorized();
 
-        // Проверяем наличие ожидаемых ключей в JSON ответе
         $response->assertJsonStructure([
             'status',
             'code',
@@ -62,7 +56,6 @@ class ExchangeControllerTest extends TestCase
 
     public function test_it_failed_pass_invalid_http_method_name()
     {
-        // Отправляем GET запрос с параметрами
         $response = $this->json('POST', '/api/v1/', [
             'method' => 'rates',
             'currency' => 'USD',
@@ -70,10 +63,8 @@ class ExchangeControllerTest extends TestCase
             'Authorization' => 'Bearer '.config('api.token.value'),
         ]);
 
-        // Проверяем успешный статус ответа
         $response->assertMethodNotAllowed();
 
-        // Проверяем наличие ожидаемых ключей в JSON ответе
         $response->assertJsonStructure([
             'status',
             'code',
@@ -89,7 +80,6 @@ class ExchangeControllerTest extends TestCase
 
     public function test_it_failed_pass_not_exist_currency_name()
     {
-        // Отправляем GET запрос с параметрами
         $response = $this->json('GET', '/api/v1/', [
             'method' => 'rates',
             'currency' => 'FOO',
@@ -97,10 +87,8 @@ class ExchangeControllerTest extends TestCase
             'Authorization' => 'Bearer '.config('api.token.value'),
         ]);
 
-        // Проверяем успешный статус ответа
         $response->assertInternalServerError();
 
-        // Проверяем наличие ожидаемых ключей в JSON ответе
         $response->assertJsonStructure([
             'status',
             'code',
@@ -125,7 +113,6 @@ class ExchangeControllerTest extends TestCase
 
         $response->assertSuccessful();
 
-        // Проверяем наличие ожидаемых ключей в JSON ответе
         $response->assertJsonStructure([
             'status',
             'code',
@@ -146,7 +133,6 @@ class ExchangeControllerTest extends TestCase
 
         $response->assertSuccessful();
 
-        // Проверяем наличие ожидаемых ключей в JSON ответе
         $response->assertJsonStructure([
             'status',
             'code',
@@ -175,7 +161,6 @@ class ExchangeControllerTest extends TestCase
 
         $response->assertMethodNotAllowed();
 
-        // Проверяем наличие ожидаемых ключей в JSON ответе
         $response->assertJsonStructure([
             'status',
             'code',
@@ -185,7 +170,6 @@ class ExchangeControllerTest extends TestCase
 
     public function test_it_unauthorized_for_convert_request()
     {
-        // Отправляем GET запрос с параметрами
         $response = $this->json('POST', '/api/v1/', [
             'method' => 'convert',
             'currency_from' => 'RUB',
@@ -193,10 +177,8 @@ class ExchangeControllerTest extends TestCase
             'value' => 100,
         ]);
 
-        // Проверяем успешный статус ответа
         $response->assertUnauthorized();
 
-        // Проверяем наличие ожидаемых ключей в JSON ответе
         $response->assertJsonStructure([
             'status',
             'code',
@@ -212,7 +194,6 @@ class ExchangeControllerTest extends TestCase
 
     public function test_it_unauthorized_pass_invalid_api_token_convert_request()
     {
-        // Отправляем GET запрос с параметрами
         $response = $this->json('POST', '/api/v1/', [
             'method' => 'convert',
             'currency_from' => 'RUB',
@@ -222,10 +203,8 @@ class ExchangeControllerTest extends TestCase
             'Authorization' => 'Bearer '.fake()->shuffleString(),
         ]);
 
-        // Проверяем успешный статус ответа
         $response->assertUnauthorized();
 
-        // Проверяем наличие ожидаемых ключей в JSON ответе
         $response->assertJsonStructure([
             'status',
             'code',
@@ -241,7 +220,6 @@ class ExchangeControllerTest extends TestCase
 
     public function test_it_failed_pass_invalid_params_convert_request()
     {
-        // Отправляем GET запрос с параметрами
         $response = $this->json('POST', '/api/v1/', [
             'method' => 'convert',
             'from' => 'RUB',
@@ -251,10 +229,8 @@ class ExchangeControllerTest extends TestCase
             'Authorization' => 'Bearer '.config('api.token.value'),
         ]);
 
-        // Проверяем успешный статус ответа
         $response->assertUnprocessable();
 
-        // Проверяем наличие ожидаемых ключей в JSON ответе
         $response->assertJsonStructure([
             'status',
             'code',
