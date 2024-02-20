@@ -19,14 +19,14 @@ class GenerateApiToken extends Command
 
     protected $description = 'Generate a random API token and update .env file';
 
-    public function handle()
+    public function handle(): int
     {
         $length = $this->ask('Enter the length of the API token (between 10 and 64)', self::MAX_LENGTH_API_TOKEN);
 
         if ($length < self::MIN_LENGTH_API_TOKEN || $length > self::MAX_LENGTH_API_TOKEN) {
             $this->error('Invalid length. Please enter a value between 10 and 64.');
 
-            return;
+            return Command::FAILURE;
         }
 
         $token = Str::random($length);
@@ -37,6 +37,8 @@ class GenerateApiToken extends Command
 
         $this->info('API_TOKEN generated and updated in .env file:');
         $this->line('API_TOKEN='.$token);
+
+        return Command::SUCCESS;
     }
 
     private function updateEnvFile(string $filePath, int $length, string $token)

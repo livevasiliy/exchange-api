@@ -37,6 +37,7 @@ class ExchangeRequest extends FormRequest
             'value' => [
                 Rule::requiredIf($method === AvailableMethodsConstants::CONVERT),
                 'numeric',
+                'gte:0.01',
             ],
         ];
     }
