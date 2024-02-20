@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Contracts\ExchangeServiceContract;
+use App\Exceptions\FailFetchListOfRatesException;
+use App\Exceptions\InvalidCurrencyForExchangeException;
+use App\Exceptions\NotFoundCurrencyException;
 use Exception;
 use Illuminate\Support\Facades\Http;
 use InvalidArgumentException;
@@ -32,7 +35,7 @@ class BlockchainInfoService implements ExchangeServiceContract
         );
 
         if ($request->status() !== Response::HTTP_OK) {
-            throw new Exception('Failed to fetch list of rates. Try again');
+            throw new FailFetchListOfRatesException();
         }
 
         return $request->json();
@@ -43,11 +46,11 @@ class BlockchainInfoService implements ExchangeServiceContract
         $rates = $this->getRates();
 
         if (empty($rates)) {
-            throw new Exception('Failed to fetch list of rates. Try again');
+            throw new FailFetchListOfRatesException();
         }
 
         if (! in_array($currency, array_keys($rates), true)) {
-            throw new Exception('Not found currency in list of currencies. Check name currency');
+            throw new NotFoundCurrencyException($currency);
         }
 
         $result = [];
@@ -73,7 +76,7 @@ class BlockchainInfoService implements ExchangeServiceContract
         $currencies = $this->getRates();
 
         if (! isset($currencies[$currencyFrom]) || ! isset($currencies[$currencyTo])) {
-            throw new InvalidArgumentException('There is no currency to be exchanged with or for.');
+            throw new InvalidCurrencyForExchangeException($currencyFrom, $currencyTo);
         }
 
         $exchangeRateFrom = $currencies[$currencyFrom]['sell'];

@@ -14,41 +14,28 @@ class CheckSupportedMethodMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param Request $request
+     * @param \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     *
+     * @return Response
      */
     public function handle(Request $request, Closure $next): Response
     {
         if ($request->has('method') === false) {
-            return new JsonResponse([
-                'status' => 'error',
-                'code' => Response::HTTP_BAD_REQUEST,
-                'message' => 'Missing required parameter `method`',
-            ]);
+            return new JsonResponse(trans('errors.missing.method.param'));
         }
 
         $method = $request->get('method');
         if (empty(trim($method))) {
-            return new JsonResponse([
-                'status' => 'error',
-                'code' => Response::HTTP_BAD_REQUEST,
-                'message' => 'Invalid method provided',
-            ]);
+            return new JsonResponse(trans('errors.invalid.http.method'));
         }
 
         if (! in_array($method, array_keys($this->getSupportedMethods()))) {
-            return new JsonResponse([
-                'status' => 'error',
-                'code' => Response::HTTP_BAD_REQUEST,
-                'message' => 'Invalid method provided',
-            ]);
+            return new JsonResponse(trans('errors.invalid.http.method'));
         }
 
         if ($request->method() !== $this->getSupportedMethods()[$method]) {
-            return new JsonResponse([
-                'status' => 'error',
-                'code' => Response::HTTP_BAD_REQUEST,
-                'message' => 'No allow HTTP method',
-            ]);
+            return new JsonResponse(trans('errors.not.allow.http.method'));
         }
 
         return $next($request);
