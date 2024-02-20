@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Http\Controllers\v1;
 
@@ -7,20 +9,25 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\v1\ExchangeRequest;
 use App\Services\ExchangeService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class ExchangeController extends Controller
 {
     public function __invoke(ExchangeRequest $request, ExchangeService $exchangeService): JsonResponse
     {
-        $data = match ($request->validated('method')) {
-            AvailableMethodsConstants::RATES => $exchangeService->rates($request->validated('currency')),
-            AvailableMethodsConstants::CONVERT => $exchangeService->exchange(
-                $request->validated('currency_from'),
-                $request->validated('currency_to'),
-                (float)$request->validated('value')
-            )
-        };
+        try {
+            $data = match ($request->validated('method')) {
+                AvailableMethodsConstants::RATES => $exchangeService->rates($request->validated('currency')),
+                AvailableMethodsConstants::CONVERT => $exchangeService->exchange(
+                    $request->validated('currency_from'),
+                    $request->validated('currency_to'),
+                    (float) $request->validated('value')
+                )
+            };
 
-        return new JsonResponse($data);
+            return new JsonResponse($data);
+        } catch (\Exception $exception) {
+            return new JsonResponse($exception->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }

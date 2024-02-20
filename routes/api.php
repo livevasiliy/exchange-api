@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use App\Http\Controllers\v1\ExchangeController;
 use Illuminate\Support\Facades\Route;

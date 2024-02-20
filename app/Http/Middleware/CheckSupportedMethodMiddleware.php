@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
@@ -12,14 +14,11 @@ class CheckSupportedMethodMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param Request $request
-     * @param \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     *
-     * @return Response
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (false === $request->has('method')) {
+        if ($request->has('method') === false) {
             return new JsonResponse([
                 'status' => 'error',
                 'code' => Response::HTTP_BAD_REQUEST,

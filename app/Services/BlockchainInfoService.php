@@ -1,16 +1,22 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Services;
 
 use App\Contracts\ExchangeServiceContract;
+use Exception;
 use Illuminate\Support\Facades\Http;
+use InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Response;
 
 class BlockchainInfoService implements ExchangeServiceContract
 {
-    public const         COMMISSION          = 0.02;
-    private const        MIN_EXCHANGE_AMOUNT = 0.01;
-    private const        MAX_PRECISION_VALUE = 10;
+    public const COMMISSION = 0.02;
+
+    private const MIN_EXCHANGE_AMOUNT = 0.01;
+
+    private const MAX_PRECISION_VALUE = 10;
 
     public function __construct(private readonly Http $httpClient)
     {
@@ -26,7 +32,7 @@ class BlockchainInfoService implements ExchangeServiceContract
         );
 
         if ($request->status() !== Response::HTTP_OK) {
-            throw new \Exception('Failed to fetch list of rates. Try again');
+            throw new Exception('Failed to fetch list of rates. Try again');
         }
 
         return $request->json();
@@ -37,11 +43,11 @@ class BlockchainInfoService implements ExchangeServiceContract
         $rates = $this->getRates();
 
         if (empty($rates)) {
-            throw new \Exception('Failed to fetch list of rates. Try again');
+            throw new Exception('Failed to fetch list of rates. Try again');
         }
 
-        if ( ! in_array($currency, array_keys($rates), true)) {
-            throw new \Exception('Not found currency in list of currencies. Check name currency');
+        if (! in_array($currency, array_keys($rates), true)) {
+            throw new Exception('Not found currency in list of currencies. Check name currency');
         }
 
         $result = [];
@@ -49,8 +55,7 @@ class BlockchainInfoService implements ExchangeServiceContract
         foreach ($rates[$currency] as $key => $value) {
             if (is_numeric($value)) {
                 $result[$key] = $this->addCommission($value);
-            }
-            else {
+            } else {
                 $result[$key] = $value;
             }
         }
@@ -67,24 +72,24 @@ class BlockchainInfoService implements ExchangeServiceContract
     {
         $currencies = $this->getRates();
 
-        if ( ! isset($currencies[$currencyFrom]) && ! isset($currencies[$currencyTo])) {
-            throw new \Exception('No exist currency from or to for exchange.');
+        if (! isset($currencies[$currencyFrom]) || ! isset($currencies[$currencyTo])) {
+            throw new InvalidArgumentException('There is no currency to be exchanged with or for.');
         }
 
         $exchangeRateFrom = $currencies[$currencyFrom]['sell'];
-        $exchangeRateTo   = $currencies[$currencyTo]['buy'];
+        $exchangeRateTo = $currencies[$currencyTo]['buy'];
 
         $convertedAmount = ($value / $exchangeRateFrom) * $exchangeRateTo;
 
         $convertedAmount = max(self::MIN_EXCHANGE_AMOUNT, round($convertedAmount, self::MAX_PRECISION_VALUE));
 
         return [
-            'currency_from'    => $currencyFrom,
-            'currency_to'      => $currencyTo,
-            'value'            => $value,
-            'converted_value'  => $convertedAmount,
-            'rate_sell'        => $exchangeRateFrom,
-            'rate_buy'         => $exchangeRateTo,
+            'currency_from' => $currencyFrom,
+            'currency_to' => $currencyTo,
+            'value' => $value,
+            'converted_value' => $convertedAmount,
+            'rate_sell' => $exchangeRateFrom,
+            'rate_buy' => $exchangeRateTo,
             'commission_value' => $this->addCommission($convertedAmount),
         ];
     }

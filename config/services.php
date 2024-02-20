@@ -33,7 +33,7 @@ return [
 
     'blockchainInfo' => [
         'base_uri' => env('BLOCKCHAIN_INFO_BASE_URI', 'https://blockchain.info'),
-        'endpoint' => env('BLOCKCHAIN_INFO_ENDPOINT', 'ticker')
+        'endpoint' => env('BLOCKCHAIN_INFO_ENDPOINT', 'ticker'),
     ],
 
 ];
